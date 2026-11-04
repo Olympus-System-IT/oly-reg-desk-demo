@@ -84,7 +84,7 @@ function LoginPage() {
       }
       const mods = modulesFor(currentUser);
       if (mods.length === 1) {
-        navigate({ to: currentUser.role === "nurse" ? "/queue" : "/dashboard" });
+        navigate({ to: mods[0] === "pharmacy" ? "/pharmacy" : currentUser.role === "nurse" ? "/queue" : "/dashboard" });
       } else {
         navigate({ to: "/modules" });
       }
@@ -164,7 +164,7 @@ function LoginPage() {
         if (safeTarget) {
           navigate({ to: safeTarget as any });
         } else if (res.permittedModules.length === 1) {
-          navigate({ to: res.user.role === "nurse" ? "/queue" : "/dashboard" });
+          navigate({ to: res.permittedModules[0] === "pharmacy" ? "/pharmacy" : res.user.role === "nurse" ? "/queue" : "/dashboard" });
         } else {
           navigate({ to: "/modules" });
         }

@@ -22,13 +22,13 @@ export const Route = createFileRoute("/_shell/users")({
   component: () => <Guard perm="users.manage" what="user management"><Users /></Guard>,
 });
 
-const ROLES: Role[] = ["admin", "manager", "receptionist", "nurse"];
+const ROLES: Role[] = ["admin", "manager", "pharmacist", "receptionist", "nurse"];
 
 const schema = z.object({
   name: z.string().trim().min(2, "Name required"),
   username: z.string().trim().min(3, "Username required").max(30).regex(/^[a-z0-9._-]+$/, "Lowercase letters, numbers, ., _, - only"),
   contact: z.string().trim().min(5, "Email or mobile required"),
-  role: z.enum(["admin", "manager", "receptionist", "nurse"]),
+  role: z.enum(["admin", "manager", "pharmacist", "receptionist", "nurse"]),
   grantPL: z.boolean().optional(),
 });
 type Form = z.infer<typeof schema>;

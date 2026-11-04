@@ -22,6 +22,7 @@ import { Route as ShellFinancialDashboardRouteImport } from './routes/_shell.fin
 import { Route as ShellInvoicesRouteImport } from './routes/_shell.invoices'
 import { Route as ShellMessagesRouteImport } from './routes/_shell.messages'
 import { Route as ShellPatientsRouteImport } from './routes/_shell.patients'
+import { Route as ShellPharmacyRouteImport } from './routes/_shell.pharmacy'
 import { Route as ShellPosRouteImport } from './routes/_shell.pos'
 import { Route as ShellQueueRouteImport } from './routes/_shell.queue'
 import { Route as ShellReportsRouteImport } from './routes/_shell.reports'
@@ -33,6 +34,14 @@ import { Route as ShellUsersRouteImport } from './routes/_shell.users'
 import { Route as ShellDoctorsIdRouteImport } from './routes/_shell.doctors.$id'
 import { Route as ShellInvoicesIdRouteImport } from './routes/_shell.invoices.$id'
 import { Route as ShellPatientsIdRouteImport } from './routes/_shell.patients.$id'
+import { Route as ShellPharmacyIndexRouteImport } from './routes/_shell.pharmacy.index'
+import { Route as ShellPharmacyBatchesRouteImport } from './routes/_shell.pharmacy.batches'
+import { Route as ShellPharmacyDispenseRouteImport } from './routes/_shell.pharmacy.dispense'
+import { Route as ShellPharmacyHistoryRouteImport } from './routes/_shell.pharmacy.history'
+import { Route as ShellPharmacyInventoryRouteImport } from './routes/_shell.pharmacy.inventory'
+import { Route as ShellPharmacyPrescriptionsRouteImport } from './routes/_shell.pharmacy.prescriptions'
+import { Route as ShellPharmacyReportsRouteImport } from './routes/_shell.pharmacy.reports'
+import { Route as ShellPharmacySuppliersRouteImport } from './routes/_shell.pharmacy.suppliers'
 import { Route as ShellSessionsIdRouteImport } from './routes/_shell.sessions.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -99,6 +108,11 @@ const ShellPatientsRoute = ShellPatientsRouteImport.update({
   path: '/patients',
   getParentRoute: () => ShellRoute,
 } as any)
+const ShellPharmacyRoute = ShellPharmacyRouteImport.update({
+  id: '/pharmacy',
+  path: '/pharmacy',
+  getParentRoute: () => ShellRoute,
+} as any)
 const ShellPosRoute = ShellPosRouteImport.update({
   id: '/pos',
   path: '/pos',
@@ -154,6 +168,47 @@ const ShellPatientsIdRoute = ShellPatientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ShellPatientsRoute,
 } as any)
+const ShellPharmacyIndexRoute = ShellPharmacyIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
+const ShellPharmacyBatchesRoute = ShellPharmacyBatchesRouteImport.update({
+  id: '/batches',
+  path: '/batches',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
+const ShellPharmacyDispenseRoute = ShellPharmacyDispenseRouteImport.update({
+  id: '/dispense',
+  path: '/dispense',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
+const ShellPharmacyHistoryRoute = ShellPharmacyHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
+const ShellPharmacyInventoryRoute = ShellPharmacyInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
+const ShellPharmacyPrescriptionsRoute =
+  ShellPharmacyPrescriptionsRouteImport.update({
+    id: '/prescriptions',
+    path: '/prescriptions',
+    getParentRoute: () => ShellPharmacyRoute,
+  } as any)
+const ShellPharmacyReportsRoute = ShellPharmacyReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
+const ShellPharmacySuppliersRoute = ShellPharmacySuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => ShellPharmacyRoute,
+} as any)
 const ShellSessionsIdRoute = ShellSessionsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -173,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/invoices': typeof ShellInvoicesRouteWithChildren
   '/messages': typeof ShellMessagesRoute
   '/patients': typeof ShellPatientsRouteWithChildren
+  '/pharmacy': typeof ShellPharmacyRouteWithChildren
   '/pos': typeof ShellPosRoute
   '/queue': typeof ShellQueueRoute
   '/reports': typeof ShellReportsRoute
@@ -184,7 +240,15 @@ export interface FileRoutesByFullPath {
   '/doctors/$id': typeof ShellDoctorsIdRoute
   '/invoices/$id': typeof ShellInvoicesIdRoute
   '/patients/$id': typeof ShellPatientsIdRoute
+  '/pharmacy/batches': typeof ShellPharmacyBatchesRoute
+  '/pharmacy/dispense': typeof ShellPharmacyDispenseRoute
+  '/pharmacy/history': typeof ShellPharmacyHistoryRoute
+  '/pharmacy/inventory': typeof ShellPharmacyInventoryRoute
+  '/pharmacy/prescriptions': typeof ShellPharmacyPrescriptionsRoute
+  '/pharmacy/reports': typeof ShellPharmacyReportsRoute
+  '/pharmacy/suppliers': typeof ShellPharmacySuppliersRoute
   '/sessions/$id': typeof ShellSessionsIdRoute
+  '/pharmacy/': typeof ShellPharmacyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -210,7 +274,15 @@ export interface FileRoutesByTo {
   '/doctors/$id': typeof ShellDoctorsIdRoute
   '/invoices/$id': typeof ShellInvoicesIdRoute
   '/patients/$id': typeof ShellPatientsIdRoute
+  '/pharmacy/batches': typeof ShellPharmacyBatchesRoute
+  '/pharmacy/dispense': typeof ShellPharmacyDispenseRoute
+  '/pharmacy/history': typeof ShellPharmacyHistoryRoute
+  '/pharmacy/inventory': typeof ShellPharmacyInventoryRoute
+  '/pharmacy/prescriptions': typeof ShellPharmacyPrescriptionsRoute
+  '/pharmacy/reports': typeof ShellPharmacyReportsRoute
+  '/pharmacy/suppliers': typeof ShellPharmacySuppliersRoute
   '/sessions/$id': typeof ShellSessionsIdRoute
+  '/pharmacy': typeof ShellPharmacyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -227,6 +299,7 @@ export interface FileRoutesById {
   '/_shell/invoices': typeof ShellInvoicesRouteWithChildren
   '/_shell/messages': typeof ShellMessagesRoute
   '/_shell/patients': typeof ShellPatientsRouteWithChildren
+  '/_shell/pharmacy': typeof ShellPharmacyRouteWithChildren
   '/_shell/pos': typeof ShellPosRoute
   '/_shell/queue': typeof ShellQueueRoute
   '/_shell/reports': typeof ShellReportsRoute
@@ -238,7 +311,15 @@ export interface FileRoutesById {
   '/_shell/doctors/$id': typeof ShellDoctorsIdRoute
   '/_shell/invoices/$id': typeof ShellInvoicesIdRoute
   '/_shell/patients/$id': typeof ShellPatientsIdRoute
+  '/_shell/pharmacy/batches': typeof ShellPharmacyBatchesRoute
+  '/_shell/pharmacy/dispense': typeof ShellPharmacyDispenseRoute
+  '/_shell/pharmacy/history': typeof ShellPharmacyHistoryRoute
+  '/_shell/pharmacy/inventory': typeof ShellPharmacyInventoryRoute
+  '/_shell/pharmacy/prescriptions': typeof ShellPharmacyPrescriptionsRoute
+  '/_shell/pharmacy/reports': typeof ShellPharmacyReportsRoute
+  '/_shell/pharmacy/suppliers': typeof ShellPharmacySuppliersRoute
   '/_shell/sessions/$id': typeof ShellSessionsIdRoute
+  '/_shell/pharmacy/': typeof ShellPharmacyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -255,6 +336,7 @@ export interface FileRouteTypes {
     | '/invoices'
     | '/messages'
     | '/patients'
+    | '/pharmacy'
     | '/pos'
     | '/queue'
     | '/reports'
@@ -266,7 +348,15 @@ export interface FileRouteTypes {
     | '/doctors/$id'
     | '/invoices/$id'
     | '/patients/$id'
+    | '/pharmacy/batches'
+    | '/pharmacy/dispense'
+    | '/pharmacy/history'
+    | '/pharmacy/inventory'
+    | '/pharmacy/prescriptions'
+    | '/pharmacy/reports'
+    | '/pharmacy/suppliers'
     | '/sessions/$id'
+    | '/pharmacy/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -292,7 +382,15 @@ export interface FileRouteTypes {
     | '/doctors/$id'
     | '/invoices/$id'
     | '/patients/$id'
+    | '/pharmacy/batches'
+    | '/pharmacy/dispense'
+    | '/pharmacy/history'
+    | '/pharmacy/inventory'
+    | '/pharmacy/prescriptions'
+    | '/pharmacy/reports'
+    | '/pharmacy/suppliers'
     | '/sessions/$id'
+    | '/pharmacy'
   id:
     | '__root__'
     | '/'
@@ -308,6 +406,7 @@ export interface FileRouteTypes {
     | '/_shell/invoices'
     | '/_shell/messages'
     | '/_shell/patients'
+    | '/_shell/pharmacy'
     | '/_shell/pos'
     | '/_shell/queue'
     | '/_shell/reports'
@@ -319,7 +418,15 @@ export interface FileRouteTypes {
     | '/_shell/doctors/$id'
     | '/_shell/invoices/$id'
     | '/_shell/patients/$id'
+    | '/_shell/pharmacy/batches'
+    | '/_shell/pharmacy/dispense'
+    | '/_shell/pharmacy/history'
+    | '/_shell/pharmacy/inventory'
+    | '/_shell/pharmacy/prescriptions'
+    | '/_shell/pharmacy/reports'
+    | '/_shell/pharmacy/suppliers'
     | '/_shell/sessions/$id'
+    | '/_shell/pharmacy/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -421,6 +528,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellPatientsRouteImport
       parentRoute: typeof ShellRoute
     }
+    '/_shell/pharmacy': {
+      id: '/_shell/pharmacy'
+      path: '/pharmacy'
+      fullPath: '/pharmacy'
+      preLoaderRoute: typeof ShellPharmacyRouteImport
+      parentRoute: typeof ShellRoute
+    }
     '/_shell/pos': {
       id: '/_shell/pos'
       path: '/pos'
@@ -498,6 +612,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShellPatientsIdRouteImport
       parentRoute: typeof ShellPatientsRoute
     }
+    '/_shell/pharmacy/': {
+      id: '/_shell/pharmacy/'
+      path: '/'
+      fullPath: '/pharmacy/'
+      preLoaderRoute: typeof ShellPharmacyIndexRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/batches': {
+      id: '/_shell/pharmacy/batches'
+      path: '/batches'
+      fullPath: '/pharmacy/batches'
+      preLoaderRoute: typeof ShellPharmacyBatchesRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/dispense': {
+      id: '/_shell/pharmacy/dispense'
+      path: '/dispense'
+      fullPath: '/pharmacy/dispense'
+      preLoaderRoute: typeof ShellPharmacyDispenseRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/history': {
+      id: '/_shell/pharmacy/history'
+      path: '/history'
+      fullPath: '/pharmacy/history'
+      preLoaderRoute: typeof ShellPharmacyHistoryRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/inventory': {
+      id: '/_shell/pharmacy/inventory'
+      path: '/inventory'
+      fullPath: '/pharmacy/inventory'
+      preLoaderRoute: typeof ShellPharmacyInventoryRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/prescriptions': {
+      id: '/_shell/pharmacy/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/pharmacy/prescriptions'
+      preLoaderRoute: typeof ShellPharmacyPrescriptionsRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/reports': {
+      id: '/_shell/pharmacy/reports'
+      path: '/reports'
+      fullPath: '/pharmacy/reports'
+      preLoaderRoute: typeof ShellPharmacyReportsRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
+    '/_shell/pharmacy/suppliers': {
+      id: '/_shell/pharmacy/suppliers'
+      path: '/suppliers'
+      fullPath: '/pharmacy/suppliers'
+      preLoaderRoute: typeof ShellPharmacySuppliersRouteImport
+      parentRoute: typeof ShellPharmacyRoute
+    }
     '/_shell/sessions/$id': {
       id: '/_shell/sessions/$id'
       path: '/$id'
@@ -544,6 +714,32 @@ const ShellPatientsRouteWithChildren = ShellPatientsRoute._addFileChildren(
   ShellPatientsRouteChildren,
 )
 
+interface ShellPharmacyRouteChildren {
+  ShellPharmacyBatchesRoute: typeof ShellPharmacyBatchesRoute
+  ShellPharmacyDispenseRoute: typeof ShellPharmacyDispenseRoute
+  ShellPharmacyHistoryRoute: typeof ShellPharmacyHistoryRoute
+  ShellPharmacyInventoryRoute: typeof ShellPharmacyInventoryRoute
+  ShellPharmacyPrescriptionsRoute: typeof ShellPharmacyPrescriptionsRoute
+  ShellPharmacyReportsRoute: typeof ShellPharmacyReportsRoute
+  ShellPharmacySuppliersRoute: typeof ShellPharmacySuppliersRoute
+  ShellPharmacyIndexRoute: typeof ShellPharmacyIndexRoute
+}
+
+const ShellPharmacyRouteChildren: ShellPharmacyRouteChildren = {
+  ShellPharmacyBatchesRoute: ShellPharmacyBatchesRoute,
+  ShellPharmacyDispenseRoute: ShellPharmacyDispenseRoute,
+  ShellPharmacyHistoryRoute: ShellPharmacyHistoryRoute,
+  ShellPharmacyInventoryRoute: ShellPharmacyInventoryRoute,
+  ShellPharmacyPrescriptionsRoute: ShellPharmacyPrescriptionsRoute,
+  ShellPharmacyReportsRoute: ShellPharmacyReportsRoute,
+  ShellPharmacySuppliersRoute: ShellPharmacySuppliersRoute,
+  ShellPharmacyIndexRoute: ShellPharmacyIndexRoute,
+}
+
+const ShellPharmacyRouteWithChildren = ShellPharmacyRoute._addFileChildren(
+  ShellPharmacyRouteChildren,
+)
+
 interface ShellSessionsRouteChildren {
   ShellSessionsIdRoute: typeof ShellSessionsIdRoute
 }
@@ -567,6 +763,7 @@ interface ShellRouteChildren {
   ShellInvoicesRoute: typeof ShellInvoicesRouteWithChildren
   ShellMessagesRoute: typeof ShellMessagesRoute
   ShellPatientsRoute: typeof ShellPatientsRouteWithChildren
+  ShellPharmacyRoute: typeof ShellPharmacyRouteWithChildren
   ShellPosRoute: typeof ShellPosRoute
   ShellQueueRoute: typeof ShellQueueRoute
   ShellReportsRoute: typeof ShellReportsRoute
@@ -588,6 +785,7 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellInvoicesRoute: ShellInvoicesRouteWithChildren,
   ShellMessagesRoute: ShellMessagesRoute,
   ShellPatientsRoute: ShellPatientsRouteWithChildren,
+  ShellPharmacyRoute: ShellPharmacyRouteWithChildren,
   ShellPosRoute: ShellPosRoute,
   ShellQueueRoute: ShellQueueRoute,
   ShellReportsRoute: ShellReportsRoute,

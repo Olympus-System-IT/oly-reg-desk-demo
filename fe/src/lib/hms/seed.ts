@@ -1,10 +1,11 @@
 import { addDays, format, subYears } from "date-fns";
 import type {
-  Appointment, ApptStatus, AuditEntry, DB, Doctor, Expense,
-  Invoice, InvoiceLine, Message, Patient, Payment, Service, Session, Specialty, User
+  Appointment, ApptStatus, AuditEntry, DB, Doctor, DosageForm, Expense,
+  Invoice, InvoiceLine, Medicine, MedicineBatch, Message, Patient, Payment, PharmacyDispense, Prescription,
+  PrescriptionItem, PurchaseOrder, Service, Session, Specialty, Supplier, User
 } from "./types";
 
-export const DB_VERSION = 5;
+export const DB_VERSION = 6;
 
 export function buildSeed(): DB {
   let s = 20261008;
@@ -125,6 +126,7 @@ export function buildSeed(): DB {
     { id: "u5", name: "Former Cashier",    username: "cashier.old",contact: "0700000000",                role: "receptionist", active: false, createdAt: day(-200), lastActive: day(-45) },
     { id: "u6", name: "Priya Manager2",   username: "manager2",   contact: "0776543210",                role: "manager",      active: true,  grantPL: true,  createdAt: day(-60) },
     { id: "u7", name: "Sampath Nurse2",   username: "nurse2",     contact: "0768765432",                role: "nurse",        active: true,  createdAt: day(-30) },
+    { id: "u8", name: "Pavithra Pharmacist", username: "pharmacist", contact: "0781122334",             role: "pharmacist",   active: true,  createdAt: day(-100) },
   ];
 
   // ── Patients ───────────────────────────────────────────────────────────────
@@ -420,6 +422,365 @@ export function buildSeed(): DB {
     });
   }
 
+  // ── Pharmacy: Suppliers ───────────────────────────────────────────────────
+  const suppliers: Supplier[] = [
+    { id: "sup1", code: "SUP-0001", name: "State Pharmaceuticals Corporation (SPC)", contactPerson: "Mr. Ranjith Perera", phone: "0112345001", email: "orders@spc.gov.lk", address: "75 Sir Baron Jayathilaka Mawatha, Colombo 01", active: true },
+    { id: "sup2", code: "SUP-0002", name: "Hemas Pharmaceuticals (Pvt) Ltd", contactPerson: "Ms. Sanduni Wijeratne", phone: "0114731731", email: "healthcare@hemas.com", address: "Hemas House, 75 Braybrooke Place, Colombo 02", active: true },
+    { id: "sup3", code: "SUP-0003", name: "Darley Butler Healthcare", contactPerson: "Mr. Kanishka De Silva", phone: "0112478478", email: "pharma@darleybutler.com", address: "98 Sri Sangaraja Mawatha, Colombo 10", active: true },
+    { id: "sup4", code: "SUP-0004", name: "GlaxoSmithKline Lanka", contactPerson: "Dr. Dinesh Fernando", phone: "0112695180", email: "supply@gsk.com.lk", address: "121 Galle Road, Dehiwala", active: true },
+    { id: "sup5", code: "SUP-0005", name: "Emerchemie NB (Ceylon) Ltd", contactPerson: "Ms. Niluka Mendis", phone: "0112503900", email: "orders@emerchemie.lk", address: "33 Park Street, Colombo 02", active: true },
+  ];
+
+  // ── Pharmacy: Medicines Catalog ───────────────────────────────────────────
+  const medRaw: [string, string, string, string, DosageForm, string, string, number, number, number, boolean, string, string][] = [
+    ["MED-0001", "Amoxicillin 500mg", "Amoxicillin Trihydrate", "Antibiotics", "Capsule", "500 mg", "Capsule", 18, 11, 100, true, "A-01", "State Pharmaceuticals"],
+    ["MED-0002", "Augmentin 625mg", "Co-amoxiclav", "Antibiotics", "Tablet", "625 mg", "Tablet", 125, 95, 60, true, "A-02", "GlaxoSmithKline"],
+    ["MED-0003", "Azithromycin 500mg", "Azithromycin", "Antibiotics", "Tablet", "500 mg", "Tablet", 95, 70, 50, true, "A-03", "Emerchemie"],
+    ["MED-0004", "Ciprofloxacin 500mg", "Ciprofloxacin HCl", "Antibiotics", "Tablet", "500 mg", "Tablet", 28, 19, 80, true, "A-04", "Hemas Pharma"],
+    ["MED-0005", "Paracetamol 500mg", "Paracetamol", "Analgesics & Pain", "Tablet", "500 mg", "Tablet", 4.5, 2.5, 300, false, "B-01", "State Pharmaceuticals"],
+    ["MED-0006", "Paracetamol Syrup 120mg/5ml", "Paracetamol", "Analgesics & Pain", "Syrup", "120 mg/5ml", "Bottle", 220, 160, 40, false, "B-02", "State Pharmaceuticals"],
+    ["MED-0007", "Ibuprofen 400mg", "Ibuprofen", "Analgesics & Pain", "Tablet", "400 mg", "Tablet", 12, 7.5, 120, false, "B-03", "Darley Butler"],
+    ["MED-0008", "Diclofenac Sodium 50mg", "Diclofenac Sodium", "Analgesics & Pain", "Tablet", "50 mg", "Tablet", 15, 9.5, 100, true, "B-04", "Emerchemie"],
+    ["MED-0009", "Tramadol 50mg", "Tramadol HCl", "Analgesics & Pain", "Capsule", "50 mg", "Capsule", 45, 30, 40, true, "Lock-A", "State Pharmaceuticals"],
+    ["MED-0010", "Omeprazole 20mg", "Omeprazole", "Gastrointestinal", "Capsule", "20 mg", "Capsule", 14, 8.5, 150, false, "C-01", "Hemas Pharma"],
+    ["MED-0011", "Pantoprazole 40mg", "Pantoprazole Sodium", "Gastrointestinal", "Tablet", "40 mg", "Tablet", 32, 22, 90, true, "C-02", "Darley Butler"],
+    ["MED-0012", "Domperidone 10mg", "Domperidone", "Gastrointestinal", "Tablet", "10 mg", "Tablet", 12, 7.5, 80, false, "C-03", "State Pharmaceuticals"],
+    ["MED-0013", "Antacid Mint Suspension 200ml", "Aluminium & Magnesium Hydroxide", "Gastrointestinal", "Suspension", "200 ml", "Bottle", 380, 270, 30, false, "C-04", "Darley Butler"],
+    ["MED-0014", "Metformin 500mg", "Metformin HCl", "Antidiabetics", "Tablet", "500 mg", "Tablet", 8, 4.5, 200, true, "D-01", "State Pharmaceuticals"],
+    ["MED-0015", "Glimepiride 2mg", "Glimepiride", "Antidiabetics", "Tablet", "2 mg", "Tablet", 22, 14, 80, true, "D-02", "Hemas Pharma"],
+    ["MED-0016", "Insulin Glargine 100IU/ml", "Insulin Glargine", "Antidiabetics", "Injection", "100 IU/ml", "Vial", 2850, 2200, 15, true, "Fridge-1", "Emerchemie"],
+    ["MED-0017", "Atorvastatin 20mg", "Atorvastatin Calcium", "Cardiovascular", "Tablet", "20 mg", "Tablet", 35, 22, 120, true, "D-03", "State Pharmaceuticals"],
+    ["MED-0018", "Losartan Potassium 50mg", "Losartan Potassium", "Antihypertensives", "Tablet", "50 mg", "Tablet", 18, 11, 150, true, "D-04", "Hemas Pharma"],
+    ["MED-0019", "Amlodipine 5mg", "Amlodipine Besylate", "Antihypertensives", "Tablet", "5 mg", "Tablet", 14, 8, 120, true, "D-05", "State Pharmaceuticals"],
+    ["MED-0020", "Bisoprolol 5mg", "Bisoprolol Fumarate", "Cardiovascular", "Tablet", "5 mg", "Tablet", 28, 18, 70, true, "D-06", "Darley Butler"],
+    ["MED-0021", "Clopidogrel 75mg", "Clopidogrel Bisulfate", "Cardiovascular", "Tablet", "75 mg", "Tablet", 42, 28, 90, true, "D-07", "GlaxoSmithKline"],
+    ["MED-0022", "Cetirizine 10mg", "Cetirizine Dihydrochloride", "Antihistamines", "Tablet", "10 mg", "Tablet", 9, 5, 150, false, "E-01", "State Pharmaceuticals"],
+    ["MED-0023", "Loratadine 10mg", "Loratadine", "Antihistamines", "Tablet", "10 mg", "Tablet", 15, 9.5, 100, false, "E-02", "Emerchemie"],
+    ["MED-0024", "Salbutamol Inhaler 100mcg", "Salbutamol Sulfate", "Respiratory", "Inhaler", "100 mcg (200 doses)", "Inhaler", 850, 620, 25, true, "E-03", "GlaxoSmithKline"],
+    ["MED-0025", "Montelukast 10mg", "Montelukast Sodium", "Respiratory", "Tablet", "10 mg", "Tablet", 48, 32, 70, true, "E-04", "Hemas Pharma"],
+    ["MED-0026", "Dexamethasone Eye Drops 5ml", "Dexamethasone 0.1%", "Other", "Drops", "5 ml", "Bottle", 320, 230, 30, true, "F-01", "Darley Butler"],
+    ["MED-0027", "Betamethasone Cream 15g", "Betamethasone Valerate 0.1%", "Other", "Cream", "15 g", "Other", 260, 180, 40, true, "F-02", "GlaxoSmithKline"],
+    ["MED-0028", "Multivitamin + Zinc 30s", "Multivitamins and Zinc", "Other", "Tablet", "Coated Tab", "Bottle", 650, 450, 50, false, "F-03", "Emerchemie"],
+  ];
+
+  const medicines: Medicine[] = medRaw.map(([code, name, genericName, category, dosageForm, strength, unit, unitPrice, unitCost, reorderLevel, reqRx, rack, mfg], i) => ({
+    id: `med${i + 1}`,
+    code,
+    name,
+    genericName,
+    category,
+    dosageForm,
+    strength,
+    unit,
+    unitPrice,
+    unitCost,
+    reorderLevel,
+    requiresPrescription: reqRx,
+    active: true,
+    rackLocation: rack,
+    manufacturer: mfg,
+    description: `${dosageForm} formulation of ${genericName} (${strength})`,
+  }));
+
+  // ── Pharmacy: Batches ─────────────────────────────────────────────────────
+  const batches: MedicineBatch[] = [];
+  medicines.forEach((m, idx) => {
+    // Primary batch
+    batches.push({
+      id: `bat${batches.length + 1}`,
+      medicineId: m.id,
+      batchNo: `BAT-2026-${String(100 + idx * 2).padStart(3, "0")}`,
+      expiryDate: day(int(240, 550)),
+      quantity: idx === 15 ? 9 : idx === 23 ? 14 : int(120, 350), // Insulin & Salbutamol set to low stock
+      initialQuantity: int(200, 400),
+      unitCost: m.unitCost,
+      unitPrice: m.unitPrice,
+      supplierId: suppliers[idx % suppliers.length].id,
+      receivedDate: day(-int(20, 90)),
+    });
+
+    // Secondary batch for select medicines
+    if (idx % 3 === 0) {
+      batches.push({
+        id: `bat${batches.length + 1}`,
+        medicineId: m.id,
+        batchNo: `BAT-2025-${String(200 + idx * 2).padStart(3, "0")}`,
+        expiryDate: day(int(120, 220)),
+        quantity: int(40, 120),
+        initialQuantity: int(150, 300),
+        unitCost: m.unitCost,
+        unitPrice: m.unitPrice,
+        supplierId: suppliers[(idx + 1) % suppliers.length].id,
+        receivedDate: day(-int(80, 150)),
+      });
+    }
+  });
+
+  // Critical Near-Expiry Batches (< 60 days) to trigger alerts
+  batches.push({
+    id: `bat${batches.length + 1}`,
+    medicineId: "med1",
+    batchNo: "BAT-2024-EXP01",
+    expiryDate: day(18),
+    quantity: 45,
+    initialQuantity: 300,
+    unitCost: 11,
+    unitPrice: 18,
+    supplierId: "sup1",
+    receivedDate: day(-280),
+  });
+  batches.push({
+    id: `bat${batches.length + 1}`,
+    medicineId: "med7",
+    batchNo: "BAT-2024-EXP02",
+    expiryDate: day(38),
+    quantity: 60,
+    initialQuantity: 250,
+    unitCost: 7.5,
+    unitPrice: 12,
+    supplierId: "sup3",
+    receivedDate: day(-260),
+  });
+
+  // Expired Batch to test quarantine alert
+  batches.push({
+    id: `bat${batches.length + 1}`,
+    medicineId: "med6",
+    batchNo: "BAT-2024-OLD09",
+    expiryDate: day(-12),
+    quantity: 8,
+    initialQuantity: 100,
+    unitCost: 160,
+    unitPrice: 220,
+    supplierId: "sup1",
+    receivedDate: day(-380),
+  });
+
+  // ── Pharmacy: Prescriptions ───────────────────────────────────────────────
+  const prescriptions: Prescription[] = [];
+  const rxDiagnoses = [
+    "Acute Upper Respiratory Tract Infection",
+    "Essential Hypertension Review",
+    "Type 2 Diabetes Mellitus Management",
+    "Gastroesophageal Reflux Disease (GERD)",
+    "Acute Bronchitis & Wheeze",
+    "Osteoarthritis & Knee Pain",
+    "Allergic Rhinitis & Sinusitis",
+    "Bacterial Pharyngitis",
+  ];
+
+  // 8 Pending Prescriptions
+  for (let i = 0; i < 8; i++) {
+    const pat = patients[i];
+    const doc = activeDoctors[i % activeDoctors.length];
+    const diag = rxDiagnoses[i % rxDiagnoses.length];
+
+    let items: PrescriptionItem[] = [];
+    if (i === 0) {
+      items = [
+        { medicineId: "med1", medicineName: "Amoxicillin 500mg", dosage: "1 Cap TDS (every 8 hrs)", duration: "5 days", quantity: 15, unitPrice: 18, instructions: "Take after meals" },
+        { medicineId: "med5", medicineName: "Paracetamol 500mg", dosage: "2 Tabs QDS PRN", duration: "3 days", quantity: 24, unitPrice: 4.5, instructions: "Take for fever or pain" },
+      ];
+    } else if (i === 1) {
+      items = [
+        { medicineId: "med18", medicineName: "Losartan Potassium 50mg", dosage: "1 Tab Daily (Morning)", duration: "30 days", quantity: 30, unitPrice: 18, instructions: "Check blood pressure weekly" },
+        { medicineId: "med17", medicineName: "Atorvastatin 20mg", dosage: "1 Tab Nocté (Night)", duration: "30 days", quantity: 30, unitPrice: 35, instructions: "Take after dinner" },
+      ];
+    } else if (i === 2) {
+      items = [
+        { medicineId: "med14", medicineName: "Metformin 500mg", dosage: "1 Tab BD", duration: "30 days", quantity: 60, unitPrice: 8, instructions: "Take with meals" },
+        { medicineId: "med10", medicineName: "Omeprazole 20mg", dosage: "1 Cap Mane (Morning)", duration: "14 days", quantity: 14, unitPrice: 14, instructions: "Take 30 mins before breakfast" },
+      ];
+    } else if (i === 3) {
+      items = [
+        { medicineId: "med2", medicineName: "Augmentin 625mg", dosage: "1 Tab BD", duration: "7 days", quantity: 14, unitPrice: 125, instructions: "Complete full antibiotic course" },
+        { medicineId: "med22", medicineName: "Cetirizine 10mg", dosage: "1 Tab Nocté", duration: "5 days", quantity: 5, unitPrice: 9, instructions: "May cause slight drowsiness" },
+      ];
+    } else if (i === 4) {
+      items = [
+        { medicineId: "med24", medicineName: "Salbutamol Inhaler 100mcg", dosage: "2 puffs PRN for breathlessness", duration: "1 month", quantity: 1, unitPrice: 850, instructions: "Rinse mouth after inhalation" },
+        { medicineId: "med25", medicineName: "Montelukast 10mg", dosage: "1 Tab Nocté", duration: "14 days", quantity: 14, unitPrice: 48, instructions: "Take at bedtime" },
+      ];
+    } else if (i === 5) {
+      items = [
+        { medicineId: "med7", medicineName: "Ibuprofen 400mg", dosage: "1 Tab TDS", duration: "5 days", quantity: 15, unitPrice: 12, instructions: "Always take after food" },
+        { medicineId: "med11", medicineName: "Pantoprazole 40mg", dosage: "1 Tab Mane", duration: "7 days", quantity: 7, unitPrice: 32, instructions: "Before breakfast" },
+      ];
+    } else {
+      items = [
+        { medicineId: "med4", medicineName: "Ciprofloxacin 500mg", dosage: "1 Tab BD", duration: "5 days", quantity: 10, unitPrice: 28, instructions: "Drink plenty of water" },
+        { medicineId: "med28", medicineName: "Multivitamin + Zinc 30s", dosage: "1 Tab Daily", duration: "30 days", quantity: 30, unitPrice: 650, instructions: "Daily nutritional supplement" },
+      ];
+    }
+
+    prescriptions.push({
+      id: `rx${i + 1}`,
+      no: `RX-${String(next("prescription")).padStart(5, "0")}`,
+      patientId: pat.id,
+      doctorId: doc.id,
+      doctorName: doc.name,
+      date: day(-int(0, 2)),
+      diagnosis: diag,
+      notes: "Follow standard dosage instructions. Return if symptoms persist.",
+      status: "Pending",
+      items,
+    });
+  }
+
+  // 12 Completed/Dispensed Prescriptions
+  const dispenses: PharmacyDispense[] = [];
+
+  for (let i = 8; i < 20; i++) {
+    const pat = patients[i];
+    const doc = activeDoctors[i % activeDoctors.length];
+    const off = -int(0, 14);
+    const rxDate = day(off);
+    const dispNo = `DSP-${String(next("dispense")).padStart(5, "0")}`;
+    const rxNo = `RX-${String(next("prescription")).padStart(5, "0")}`;
+
+    const medA = medicines[i % medicines.length];
+    const medB = medicines[(i + 4) % medicines.length];
+    const qtyA = int(10, 30);
+    const qtyB = int(5, 20);
+    const subtotal = qtyA * medA.unitPrice + qtyB * medB.unitPrice;
+    const discount = i % 4 === 0 ? 50 : 0;
+    const total = subtotal - discount;
+
+    const rxItems: PrescriptionItem[] = [
+      { medicineId: medA.id, medicineName: medA.name, dosage: "1 Tab BD", duration: "7 days", quantity: qtyA, unitPrice: medA.unitPrice },
+      { medicineId: medB.id, medicineName: medB.name, dosage: "1 Tab Daily", duration: "10 days", quantity: qtyB, unitPrice: medB.unitPrice },
+    ];
+
+    const rxId = `rx${i + 1}`;
+    prescriptions.push({
+      id: rxId,
+      no: rxNo,
+      patientId: pat.id,
+      doctorId: doc.id,
+      doctorName: doc.name,
+      date: rxDate,
+      diagnosis: pick(rxDiagnoses),
+      status: "Dispensed",
+      items: rxItems,
+      dispensedAt: `${rxDate}T10:${int(10, 59)}:00`,
+      dispensedBy: "Pavithra Pharmacist",
+      dispenseId: `dsp${i - 7}`,
+    });
+
+    dispenses.push({
+      id: `dsp${i - 7}`,
+      no: dispNo,
+      prescriptionId: rxId,
+      patientId: pat.id,
+      patientName: pat.name,
+      patientMobile: pat.mobile,
+      date: `${rxDate}T10:${int(10, 59)}:00`,
+      items: [
+        { medicineId: medA.id, medicineName: medA.name, batchId: `bat1`, batchNo: `BAT-2026-100`, qty: qtyA, unitPrice: medA.unitPrice, total: qtyA * medA.unitPrice },
+        { medicineId: medB.id, medicineName: medB.name, batchId: `bat2`, batchNo: `BAT-2026-102`, qty: qtyB, unitPrice: medB.unitPrice, total: qtyB * medB.unitPrice },
+      ],
+      subtotal,
+      discount,
+      total,
+      payMethod: pick(["Cash", "Card", "Cash"] as const),
+      by: "Pavithra Pharmacist",
+      status: "Completed",
+      notes: "Dispensed as prescribed. Patient counselled on usage.",
+    });
+  }
+
+  // 3 Direct OTC counter sales
+  for (let j = 0; j < 3; j++) {
+    const off = -j;
+    const dateStr = day(off);
+    const dispNo = `DSP-${String(next("dispense")).padStart(5, "0")}`;
+    const p = patients[30 + j];
+    dispenses.push({
+      id: `dsp-otc-${j + 1}`,
+      no: dispNo,
+      patientId: p.id,
+      patientName: p.name,
+      patientMobile: p.mobile,
+      date: `${dateStr}T15:20:00`,
+      items: [
+        { medicineId: "med5", medicineName: "Paracetamol 500mg", batchId: "bat5", batchNo: "BAT-2026-108", qty: 20, unitPrice: 4.5, total: 90 },
+        { medicineId: "med22", medicineName: "Cetirizine 10mg", batchId: "bat22", batchNo: "BAT-2026-144", qty: 10, unitPrice: 9, total: 90 },
+      ],
+      subtotal: 180,
+      discount: 0,
+      total: 180,
+      payMethod: "Cash",
+      by: "Pavithra Pharmacist",
+      status: "Completed",
+      notes: "Walk-in OTC sale",
+    });
+  }
+
+  // ── Pharmacy: Purchase Orders ─────────────────────────────────────────────
+  const purchaseOrders: PurchaseOrder[] = [
+    {
+      id: "po1",
+      no: `PO-${String(next("purchaseOrder")).padStart(4, "0")}`,
+      supplierId: "sup1",
+      orderDate: day(-25),
+      expectedDate: day(-20),
+      receivedDate: day(-19),
+      status: "Received",
+      items: [
+        { medicineId: "med1", medicineName: "Amoxicillin 500mg", qtyOrdered: 500, qtyReceived: 500, unitCost: 11, batchNo: "BAT-2026-100", expiryDate: day(360), subtotal: 5500 },
+        { medicineId: "med5", medicineName: "Paracetamol 500mg", qtyOrdered: 1000, qtyReceived: 1000, unitCost: 2.5, batchNo: "BAT-2026-108", expiryDate: day(450), subtotal: 2500 },
+      ],
+      totalAmount: 8000,
+      notes: "Routine monthly antibiotics and analgesics replenishment",
+      by: "Pavithra Pharmacist",
+    },
+    {
+      id: "po2",
+      no: `PO-${String(next("purchaseOrder")).padStart(4, "0")}`,
+      supplierId: "sup2",
+      orderDate: day(-15),
+      expectedDate: day(-10),
+      receivedDate: day(-9),
+      status: "Received",
+      items: [
+        { medicineId: "med10", medicineName: "Omeprazole 20mg", qtyOrdered: 300, qtyReceived: 300, unitCost: 8.5, batchNo: "BAT-2026-118", expiryDate: day(400), subtotal: 2550 },
+        { medicineId: "med18", medicineName: "Losartan Potassium 50mg", qtyOrdered: 400, qtyReceived: 400, unitCost: 11, batchNo: "BAT-2026-134", expiryDate: day(420), subtotal: 4400 },
+      ],
+      totalAmount: 6950,
+      notes: "Hypertension & GI stock",
+      by: "Pavithra Pharmacist",
+    },
+    {
+      id: "po3",
+      no: `PO-${String(next("purchaseOrder")).padStart(4, "0")}`,
+      supplierId: "sup4",
+      orderDate: day(-5),
+      expectedDate: day(2),
+      status: "Ordered",
+      items: [
+        { medicineId: "med2", medicineName: "Augmentin 625mg", qtyOrdered: 150, unitCost: 95, subtotal: 14250 },
+        { medicineId: "med24", medicineName: "Salbutamol Inhaler 100mcg", qtyOrdered: 50, unitCost: 620, subtotal: 31000 },
+      ],
+      totalAmount: 45250,
+      notes: "Emergency respiratory & antibiotic shipment pending delivery",
+      by: "Pavithra Pharmacist",
+    },
+    {
+      id: "po4",
+      no: `PO-${String(next("purchaseOrder")).padStart(4, "0")}`,
+      supplierId: "sup5",
+      orderDate: day(-2),
+      expectedDate: day(5),
+      status: "Draft",
+      items: [
+        { medicineId: "med16", medicineName: "Insulin Glargine 100IU/ml", qtyOrdered: 30, unitCost: 2200, subtotal: 66000 },
+      ],
+      totalAmount: 66000,
+      notes: "Draft cold-chain replenishment PO for upcoming month",
+      by: "Pavithra Pharmacist",
+    },
+  ];
+
   return {
     version: DB_VERSION,
     specialties,
@@ -433,6 +794,12 @@ export function buildSeed(): DB {
     expenses,
     messages,
     auditLog,
+    medicines,
+    batches,
+    prescriptions,
+    dispenses,
+    suppliers,
+    purchaseOrders,
     settings: {
       hospitalName: "Olympus Lanka Hospital",
       currency: "LKR",

@@ -36,8 +36,10 @@ The system contains built-in demo credentials for quick role switching directly 
 
 | Role | Demo Username | Contact / Email | Access Permissions & Responsibilities |
 |------|---------------|-----------------|----------------------------------------|
-| **Admin** | `admin` | `admin@example-hospital.lk` | Full access to both **SFA** (Administration) and **Billing** modules. Manages doctors, schedules, services, users, settings, approvals, and full P&L. |
-| **Manager** | `manager` | `0771234567` | Access to **Billing** module: dashboards, reports, session schedules, patient operations, and expenses. P&L accessible only when `grantPL` is enabled. |
+| **Admin** | `admin` | `admin@example-hospital.lk` | Full access to **SFA** (Administration), **Billing**, and **Pharmacy** modules. Manages doctors, schedules, services, users, settings, approvals, and full P&L. |
+| **Admin** | `admin` | `admin@example-hospital.lk` | Full access to **SFA** (Administration), **Billing**, and **Pharmacy** modules. Manages doctors, schedules, services, users, settings, approvals, and full P&L. |
+| **Manager** | `manager` | `0771234567` | Access to **Billing** and **Pharmacy** modules: dashboards, reports, session schedules, patient operations, inventory, and expenses. P&L accessible only when `grantPL` is enabled. |
+| **Pharmacist** | `pharmacist` | `0781122334` | Full access to **Pharmacy** module: prescription dispensing, counter OTC cashiering, drug catalog & batch FEFO expiry tracker, suppliers, and purchase orders. |
 | **Receptionist / Cashier** | `reception` | `0712345678` | Access to **Billing** module: patient registration, appointment booking, queue management, POS cashiering, collecting payments, and receipts. |
 | **Nurse** | `nurse` | `0759876543` | Access to **Billing** module: doctor sessions, waiting queue advancement, and patient attendance. **No financial or pricing data is displayed.** |
 | **Deactivated (Test)** | `cashier.old` | `0700000000` | Inactive staff account for verifying deactivated user rejection (`active: false`). |
@@ -75,6 +77,16 @@ The system contains built-in demo credentials for quick role switching directly 
 - `/invoices/$id` — Invoice detail view, multi-payment collection against the same invoice, refunds, voids, and print layouts (80mm thermal, A4 invoice, digital e-bill).
 - `/expenses` — Operational disbursements ledger, category breakdown chart, and CSV export.
 - `/messages` — SMS Centre tracking outbound patient notifications, delivery statuses, retry controls, and manual compose.
+
+### Pharmacy (Prescriptions, Dispensary & Inventory Module)
+- `/pharmacy` — Pharmacy operational dashboard with dispensary queues, stock valuations, and safety alerts.
+- `/pharmacy/dispense` — Prescription dispensing counter POS with FEFO batch allocation and receipt printing.
+- `/pharmacy/prescriptions` — Clinical prescriptions directory, diagnosis tracking, and doctor order logs.
+- `/pharmacy/inventory` — Medications master catalog, generic mappings, unit pricing, margins, and rack locations.
+- `/pharmacy/batches` — Batch & expiry tracker with shelf-life alerts and stock audit adjustments.
+- `/pharmacy/suppliers` — Pharmaceutical suppliers directory and Purchase Orders with Goods Received (GRN).
+- `/pharmacy/history` — Archived dispensing transactions ledger and printable receipts.
+- `/pharmacy/reports` — Pharmacy financial analytics, COGS, gross margins, fast-moving drugs, and expiry risk audit.
 
 ---
 

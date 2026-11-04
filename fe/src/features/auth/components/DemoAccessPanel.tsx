@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Sparkles, User, ShieldCheck, Stethoscope, Receipt } from "lucide-react";
+import { ChevronDown, ChevronUp, Sparkles, User, ShieldCheck, Stethoscope, Receipt, Pill } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DEMO_PASSWORD } from "../services/authService";
 import { cn } from "@/lib/utils";
@@ -14,9 +14,17 @@ const DEMO_ROLES = [
     key: "admin",
     username: "admin",
     label: "Admin",
-    subtext: "Full SFA & Billing access",
+    subtext: "Full SFA, Billing & Pharmacy",
     icon: ShieldCheck,
     tone: "border-primary/30 hover:border-primary text-primary",
+  },
+  {
+    key: "pharmacist",
+    username: "pharmacist",
+    label: "Pharmacist",
+    subtext: "Dispensing, drug inventory & batches",
+    icon: Pill,
+    tone: "border-blue-300 hover:border-blue-500 text-blue-700",
   },
   {
     key: "manager",

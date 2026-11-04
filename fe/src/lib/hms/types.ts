@@ -1,5 +1,5 @@
-export type Role = "admin" | "manager" | "receptionist" | "nurse";
-export type ModuleKey = "sfa" | "billing";
+export type Role = "admin" | "manager" | "receptionist" | "nurse" | "pharmacist";
+export type ModuleKey = "sfa" | "billing" | "pharmacy";
 
 export interface Specialty {
   id: string;
@@ -208,6 +208,150 @@ export interface Settings {
   smsTemplateSessionChange: string;
 }
 
+// ── Pharmacy Module Models ───────────────────────────────────────────────────
+
+export type DosageForm =
+  | "Tablet"
+  | "Capsule"
+  | "Syrup"
+  | "Suspension"
+  | "Injection"
+  | "Ointment"
+  | "Cream"
+  | "Drops"
+  | "Inhaler"
+  | "Infusion"
+  | "Other";
+
+export interface Medicine {
+  id: string;
+  code: string;
+  name: string;
+  genericName: string;
+  category: string;
+  dosageForm: DosageForm;
+  strength: string;
+  unit: string;
+  unitPrice: number;
+  unitCost: number;
+  reorderLevel: number;
+  requiresPrescription: boolean;
+  active: boolean;
+  rackLocation?: string;
+  description?: string;
+  manufacturer?: string;
+}
+
+export interface MedicineBatch {
+  id: string;
+  medicineId: string;
+  batchNo: string;
+  expiryDate: string; // yyyy-MM-dd
+  quantity: number;
+  initialQuantity: number;
+  unitCost: number;
+  unitPrice: number;
+  supplierId?: string;
+  receivedDate: string; // yyyy-MM-dd
+}
+
+export type PrescriptionStatus = "Pending" | "Dispensed" | "Partially Dispensed" | "Cancelled";
+
+export interface PrescriptionItem {
+  medicineId: string;
+  medicineName: string;
+  dosage: string;
+  duration: string;
+  quantity: number;
+  unitPrice: number;
+  instructions?: string;
+}
+
+export interface Prescription {
+  id: string;
+  no: string;
+  patientId: string;
+  doctorId?: string;
+  doctorName?: string;
+  date: string; // yyyy-MM-dd
+  diagnosis?: string;
+  notes?: string;
+  status: PrescriptionStatus;
+  items: PrescriptionItem[];
+  dispensedAt?: string;
+  dispensedBy?: string;
+  dispenseId?: string;
+}
+
+export interface PharmacyDispenseItem {
+  medicineId: string;
+  medicineName: string;
+  batchId: string;
+  batchNo: string;
+  dosage?: string;
+  qty: number;
+  unitPrice: number;
+  total: number;
+}
+
+export interface PharmacyDispense {
+  id: string;
+  no: string;
+  prescriptionId?: string;
+  patientId: string;
+  patientName: string;
+  patientMobile?: string;
+  date: string; // ISO
+  items: PharmacyDispenseItem[];
+  subtotal: number;
+  discount: number;
+  total: number;
+  payMethod: PayMethod;
+  cashReceived?: number;
+  change?: number;
+  by: string;
+  status: "Completed" | "Voided";
+  notes?: string;
+}
+
+export interface Supplier {
+  id: string;
+  code: string;
+  name: string;
+  contactPerson: string;
+  phone: string;
+  email: string;
+  address: string;
+  active: boolean;
+}
+
+export type PurchaseOrderStatus = "Draft" | "Ordered" | "Received" | "Cancelled";
+
+export interface PurchaseOrderItem {
+  medicineId: string;
+  medicineName: string;
+  qtyOrdered: number;
+  qtyReceived?: number;
+  unitCost: number;
+  batchNo?: string;
+  expiryDate?: string;
+  subtotal: number;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  no: string;
+  supplierId: string;
+  orderDate: string;
+  expectedDate?: string;
+  receivedDate?: string;
+  status: PurchaseOrderStatus;
+  items: PurchaseOrderItem[];
+  totalAmount: number;
+  notes?: string;
+  by: string;
+}
+
 export interface DB {
   version: number;
   specialties: Specialty[];
@@ -222,6 +366,12 @@ export interface DB {
   messages: Message[];
   auditLog: AuditEntry[];
   settings: Settings;
+  medicines: Medicine[];
+  batches: MedicineBatch[];
+  prescriptions: Prescription[];
+  dispenses: PharmacyDispense[];
+  suppliers: Supplier[];
+  purchaseOrders: PurchaseOrder[];
   counters: Record<string, number>;
   auth: { userId: string | null; module: ModuleKey | null };
 }

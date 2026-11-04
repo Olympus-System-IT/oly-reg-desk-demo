@@ -3,7 +3,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Stethoscope, Tags, CalendarClock, FlaskConical, Users, Settings, BarChart3,
   UserPlus, CalendarPlus, ClipboardList, ListOrdered, CreditCard, Receipt, Wallet, LogOut, Building2, ChevronDown,
-  ShieldCheck, MessageSquare, TrendingUp,
+  ShieldCheck, MessageSquare, TrendingUp, Pill, Boxes, Truck, History,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
@@ -75,12 +75,43 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       ],
     },
   ],
+  pharmacy: [
+    {
+      group: "Overview",
+      items: [
+        { title: "Pharmacy Dashboard", to: "/pharmacy", icon: LayoutDashboard, perm: "pharmacy.access" },
+      ],
+    },
+    {
+      group: "Dispensing & Counter",
+      items: [
+        { title: "Dispense / Counter POS", to: "/pharmacy/dispense", icon: CreditCard, perm: "pharmacy.dispense" },
+        { title: "Prescriptions", to: "/pharmacy/prescriptions", icon: ClipboardList, perm: "pharmacy.access" },
+        { title: "Dispensed History", to: "/pharmacy/history", icon: Receipt, perm: "pharmacy.access" },
+      ],
+    },
+    {
+      group: "Stock & Inventory",
+      items: [
+        { title: "Medications Master", to: "/pharmacy/inventory", icon: Pill, perm: "pharmacy.inventory" },
+        { title: "Batch & Expiry Tracker", to: "/pharmacy/batches", icon: Boxes, perm: "pharmacy.inventory" },
+        { title: "Suppliers & POs", to: "/pharmacy/suppliers", icon: Truck, perm: "pharmacy.manage" },
+      ],
+    },
+    {
+      group: "Reports",
+      items: [
+        { title: "Pharmacy Reports", to: "/pharmacy/reports", icon: BarChart3, perm: "reports.view" },
+      ],
+    },
+  ],
 };
 
 const TITLES: Record<string, string> = {
   dashboard: "Dashboard", "financial-dashboard": "Financial Dashboard", specialties: "Consultant Types", doctors: "Doctors", sessions: "Doctor sessions", services: "Services & Modalities",
   users: "Users", approvals: "Approvals", reports: "Reports", settings: "Settings", book: "New booking", patients: "Patients", appointments: "Appointments",
   queue: "Queue", pos: "POS", invoices: "Invoices", expenses: "Expenses", messages: "SMS Centre",
+  pharmacy: "Dashboard", dispense: "Dispense / Counter POS", prescriptions: "Prescriptions", history: "Dispensed History", inventory: "Medications Master", batches: "Batch & Expiry Tracker", suppliers: "Suppliers & POs",
 };
 
 function AppSidebar({ module }: { module: ModuleKey }) {
@@ -119,7 +150,15 @@ function AppSidebar({ module }: { module: ModuleKey }) {
                 <SidebarMenu>
                   {items.map((i) => (
                     <SidebarMenuItem key={i.to}>
-                      <SidebarMenuButton asChild isActive={path === i.to || path.startsWith(i.to + "/")} tooltip={i.title}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={
+                          i.to === "/pharmacy"
+                            ? path === "/pharmacy" || path === "/pharmacy/"
+                            : path === i.to || path.startsWith(i.to + "/")
+                        }
+                        tooltip={i.title}
+                      >
                         <Link to={i.to}>
                           <i.icon />
                           <span>{i.title}</span>
@@ -150,10 +189,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const mods = modulesFor(user);
   const module: ModuleKey = db.auth.module && mods.includes(db.auth.module) ? db.auth.module : mods[0] ?? "billing";
   const segs = path.split("/").filter(Boolean);
+  const displaySegs = segs[0] === "pharmacy" && segs.length > 1 ? segs.slice(1) : segs;
 
   const switchModule = (m: ModuleKey) => {
     mutate((d) => (d.auth.module = m));
-    navigate({ to: m === "sfa" ? "/dashboard" : can(user, "dashboard.view") ? "/dashboard" : "/queue" });
+    navigate({ to: m === "pharmacy" ? "/pharmacy" : m === "sfa" ? "/dashboard" : can(user, "dashboard.view") ? "/dashboard" : "/queue" });
   };
 
   return (
@@ -175,11 +215,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
             <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1.5 text-sm text-muted-foreground md:flex">
               <span className="font-medium text-foreground">{MODULE_LABEL[module].name}</span>
-              {segs.map((s, i) => (
+              {displaySegs.map((s, i) => (
                 <span key={i} className="flex items-center gap-1.5 truncate">
                   <span aria-hidden>/</span>
-                  {i < segs.length - 1 ? (
-                    <Link to={"/" + segs.slice(0, i + 1).join("/")} className="hover:text-primary">
+                  {i < displaySegs.length - 1 ? (
+                    <Link to={"/" + segs.slice(0, (segs[0] === "pharmacy" && segs.length > 1 ? 1 : 0) + i + 1).join("/")} className="hover:text-primary">
                       {TITLES[s] ?? s}
                     </Link>
                   ) : (
