@@ -132,45 +132,7 @@ function ModulesPage() {
               </button>
             )}
 
-            {/* Billing Card */}
-            {mods.includes("billing") && (
-              <button
-                type="button"
-                onClick={() => handleSelectModule("billing")}
-                className="group relative flex flex-col justify-between rounded-xl border bg-card p-6 text-left shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer motion-reduce:hover:translate-y-0"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <Receipt className="size-6" />
-                    </div>
-                    <Badge variant="outline" className="text-[11px] font-medium">
-                      Operations
-                    </Badge>
-                  </div>
-
-                  <div className="mt-4 flex items-center justify-between">
-                    <h2 className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                      Billing
-                    </h2>
-                    <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
-                  </div>
-
-                  <div className="text-xs font-semibold text-muted-foreground mt-0.5">
-                    Reception, POS and patient operations
-                  </div>
-
-                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-                    Patient registrations, appointment booking, OPD waiting queue tokens, POS cashiering, receipts, and expenses.
-                  </p>
-                </div>
-
-                <div className="mt-6 flex items-center gap-1.5 text-[11px] font-medium text-primary">
-                  <CheckCircle className="size-3.5" />
-                  <span>Clinical & Cashier Operations</span>
-                </div>
-              </button>
-            )}
+            
 
             {/* Pharmacy Card */}
             {mods.includes("pharmacy") && (
@@ -208,6 +170,48 @@ function ModulesPage() {
                 <div className="mt-6 flex items-center gap-1.5 text-[11px] font-medium text-primary">
                   <CheckCircle className="size-3.5" />
                   <span>Dispensary & Inventory Authority</span>
+                </div>
+              </button>
+            )}
+
+            {/* Billing Card */}
+            {mods.includes("billing") && (
+              <button
+                type="button"
+                onClick={() => handleSelectModule("billing")}
+                className="group relative flex flex-col justify-between rounded-xl border bg-card p-6 text-left shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer motion-reduce:hover:translate-y-0"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <Receipt className="size-6" />
+                    </div>
+                    <Badge variant="outline" className="text-[11px] font-medium">
+                      Operations
+                    </Badge>
+                  </div>
+
+                  
+
+                  <div className="mt-4 flex items-center justify-between">
+                    <h2 className="text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                      Billing
+                    </h2>
+                    <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                  </div>
+
+                  <div className="text-xs font-semibold text-muted-foreground mt-0.5">
+                    Reception, POS and patient operations
+                  </div>
+
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                    Patient registrations, appointment booking, OPD waiting queue tokens, POS cashiering, receipts, and expenses.
+                  </p>
+                </div>
+
+                <div className="mt-6 flex items-center gap-1.5 text-[11px] font-medium text-primary">
+                  <CheckCircle className="size-3.5" />
+                  <span>Clinical & Cashier Operations</span>
                 </div>
               </button>
             )}
