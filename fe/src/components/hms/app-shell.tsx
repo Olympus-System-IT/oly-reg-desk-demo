@@ -24,7 +24,7 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       group: "Overview",
       items: [
         { title: "Dashboard", to: "/dashboard", icon: LayoutDashboard, perm: "dashboard.view" },
-        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "dashboard.view" },
+        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "financial.view" },
       ],
     },
     {
@@ -51,7 +51,7 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       group: "Overview",
       items: [
         { title: "Dashboard", to: "/dashboard", icon: LayoutDashboard, perm: "dashboard.view" },
-        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "dashboard.view" },
+        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "financial.view" },
       ],
     },
     {

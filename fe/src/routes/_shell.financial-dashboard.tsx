@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_shell/financial-dashboard")({
     ],
   }),
   component: () => (
-    <Guard perm="dashboard.view" what="the financial dashboard">
+    <Guard perm="financial.view" what="the financial dashboard">
       <ConfigurableFinancialDashboard />
     </Guard>
   ),

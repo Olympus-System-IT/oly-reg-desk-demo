@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { can } from "@/lib/hms/permissions";
+import type { User } from "@/lib/hms/types";
 import {
   BASELINE_FINANCIAL_DATA,
   BASELINE_MONTHLY_TREND,
@@ -80,5 +82,45 @@ describe("Configurable Financial Dashboard Prototype Logic", () => {
       expect(scaledTrend[i].expenses).toBeCloseTo(BASELINE_MONTHLY_TREND[i].expenses * factor, 2);
       expect(scaledTrend[i].netProfit).toBeCloseTo(BASELINE_MONTHLY_TREND[i].netProfit * factor, 2);
     }
+  });
+
+  describe("Role-based access permissions", () => {
+    const makeUser = (role: User["role"], extra: Partial<User> = {}): User => ({
+      id: "test-user",
+      name: "Test User",
+      username: "testuser",
+      contact: "test@example.com",
+      role,
+      active: true,
+      createdAt: "2026-01-01",
+      ...extra,
+    });
+
+    it("grants financial.view permission strictly to admin role only", () => {
+      const admin = makeUser("admin");
+      expect(can(admin, "financial.view")).toBe(true);
+
+      const manager = makeUser("manager");
+      expect(can(manager, "financial.view")).toBe(false);
+
+      const managerWithPL = makeUser("manager", { grantPL: true });
+      expect(can(managerWithPL, "financial.view")).toBe(false);
+
+      const pharmacist = makeUser("pharmacist");
+      expect(can(pharmacist, "financial.view")).toBe(false);
+
+      const receptionist = makeUser("receptionist");
+      expect(can(receptionist, "financial.view")).toBe(false);
+
+      const nurse = makeUser("nurse");
+      expect(can(nurse, "financial.view")).toBe(false);
+    });
+
+    it("denies access to inactive admin or unauthenticated users", () => {
+      const inactiveAdmin = makeUser("admin", { active: false });
+      expect(can(inactiveAdmin, "financial.view")).toBe(false);
+      expect(can(null, "financial.view")).toBe(false);
+      expect(can(undefined, "financial.view")).toBe(false);
+    });
   });
 });
