@@ -11,6 +11,7 @@ export type Perm =
   | "users.manage"
   | "dashboard.view"
   | "financial.view"
+  | "analytics.view"
   | "reports.view"
   | "pl.view"
   | "patients.view"
@@ -28,7 +29,7 @@ export type Perm =
 const ROLE_PERMS: Record<Role, Perm[]> = {
   admin: [
     "sfa.access", "billing.access", "pharmacy.access", "pharmacy.dispense", "pharmacy.inventory", "pharmacy.manage",
-    "setup.manage", "users.manage", "dashboard.view", "financial.view", "reports.view", "pl.view",
+    "setup.manage", "users.manage", "dashboard.view", "financial.view", "analytics.view", "reports.view", "pl.view",
     "patients.view", "patients.manage", "bookings.manage", "billing.view", "billing.collect", "refund.approve",
     "void.approve", "queue.update", "expenses.manage", "sessions.view", "booking.override",
   ],

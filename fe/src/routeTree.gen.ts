@@ -16,6 +16,7 @@ import { Route as ShellAppointmentsRouteImport } from './routes/_shell.appointme
 import { Route as ShellApprovalsRouteImport } from './routes/_shell.approvals'
 import { Route as ShellBookRouteImport } from './routes/_shell.book'
 import { Route as ShellDashboardRouteImport } from './routes/_shell.dashboard'
+import { Route as ShellDoctorAnalyticsRouteImport } from './routes/_shell.doctor-analytics'
 import { Route as ShellDoctorsRouteImport } from './routes/_shell.doctors'
 import { Route as ShellExpensesRouteImport } from './routes/_shell.expenses'
 import { Route as ShellFinancialDashboardRouteImport } from './routes/_shell.financial-dashboard'
@@ -76,6 +77,11 @@ const ShellBookRoute = ShellBookRouteImport.update({
 const ShellDashboardRoute = ShellDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => ShellRoute,
+} as any)
+const ShellDoctorAnalyticsRoute = ShellDoctorAnalyticsRouteImport.update({
+  id: '/doctor-analytics',
+  path: '/doctor-analytics',
   getParentRoute: () => ShellRoute,
 } as any)
 const ShellDoctorsRoute = ShellDoctorsRouteImport.update({
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/approvals': typeof ShellApprovalsRoute
   '/book': typeof ShellBookRoute
   '/dashboard': typeof ShellDashboardRoute
+  '/doctor-analytics': typeof ShellDoctorAnalyticsRoute
   '/doctors': typeof ShellDoctorsRouteWithChildren
   '/expenses': typeof ShellExpensesRoute
   '/financial-dashboard': typeof ShellFinancialDashboardRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/approvals': typeof ShellApprovalsRoute
   '/book': typeof ShellBookRoute
   '/dashboard': typeof ShellDashboardRoute
+  '/doctor-analytics': typeof ShellDoctorAnalyticsRoute
   '/doctors': typeof ShellDoctorsRouteWithChildren
   '/expenses': typeof ShellExpensesRoute
   '/financial-dashboard': typeof ShellFinancialDashboardRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/_shell/approvals': typeof ShellApprovalsRoute
   '/_shell/book': typeof ShellBookRoute
   '/_shell/dashboard': typeof ShellDashboardRoute
+  '/_shell/doctor-analytics': typeof ShellDoctorAnalyticsRoute
   '/_shell/doctors': typeof ShellDoctorsRouteWithChildren
   '/_shell/expenses': typeof ShellExpensesRoute
   '/_shell/financial-dashboard': typeof ShellFinancialDashboardRoute
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/approvals'
     | '/book'
     | '/dashboard'
+    | '/doctor-analytics'
     | '/doctors'
     | '/expenses'
     | '/financial-dashboard'
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/approvals'
     | '/book'
     | '/dashboard'
+    | '/doctor-analytics'
     | '/doctors'
     | '/expenses'
     | '/financial-dashboard'
@@ -400,6 +411,7 @@ export interface FileRouteTypes {
     | '/_shell/approvals'
     | '/_shell/book'
     | '/_shell/dashboard'
+    | '/_shell/doctor-analytics'
     | '/_shell/doctors'
     | '/_shell/expenses'
     | '/_shell/financial-dashboard'
@@ -484,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof ShellDashboardRouteImport
+      parentRoute: typeof ShellRoute
+    }
+    '/_shell/doctor-analytics': {
+      id: '/_shell/doctor-analytics'
+      path: '/doctor-analytics'
+      fullPath: '/doctor-analytics'
+      preLoaderRoute: typeof ShellDoctorAnalyticsRouteImport
       parentRoute: typeof ShellRoute
     }
     '/_shell/doctors': {
@@ -757,6 +776,7 @@ interface ShellRouteChildren {
   ShellApprovalsRoute: typeof ShellApprovalsRoute
   ShellBookRoute: typeof ShellBookRoute
   ShellDashboardRoute: typeof ShellDashboardRoute
+  ShellDoctorAnalyticsRoute: typeof ShellDoctorAnalyticsRoute
   ShellDoctorsRoute: typeof ShellDoctorsRouteWithChildren
   ShellExpensesRoute: typeof ShellExpensesRoute
   ShellFinancialDashboardRoute: typeof ShellFinancialDashboardRoute
@@ -779,6 +799,7 @@ const ShellRouteChildren: ShellRouteChildren = {
   ShellApprovalsRoute: ShellApprovalsRoute,
   ShellBookRoute: ShellBookRoute,
   ShellDashboardRoute: ShellDashboardRoute,
+  ShellDoctorAnalyticsRoute: ShellDoctorAnalyticsRoute,
   ShellDoctorsRoute: ShellDoctorsRouteWithChildren,
   ShellExpensesRoute: ShellExpensesRoute,
   ShellFinancialDashboardRoute: ShellFinancialDashboardRoute,
