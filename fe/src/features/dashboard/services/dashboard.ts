@@ -34,8 +34,9 @@ export function getDashboardSummary(db: DB, filters: DashboardFilters, role: Rol
     ? Math.round(((todayBookedCount - yesterdayApptsCount) / yesterdayApptsCount) * 100)
     : 0;
 
-  // 2. Waiting Patients
-  const waitingCount = todayAppts.filter((a) => a.status === "Waiting" || a.status === "Checked In").length;
+  // 2. Cancelled Appointments (Today)
+  const cancelledCount = todayAppts.filter((a) => a.status === "Cancelled").length;
+  const cancelledPct = todayBookedCount > 0 ? Math.round((cancelledCount / todayBookedCount) * 100) : 0;
 
   // 3. Available Doctors (on duty today)
   const docsOnDuty = new Set(todaySessions.map((s) => s.doctorId)).size;
@@ -94,14 +95,14 @@ export function getDashboardSummary(db: DB, filters: DashboardFilters, role: Rol
       tone: "blue",
     },
     {
-      id: "waiting-patients",
-      label: "Waiting Patients",
-      value: waitingCount,
-      formattedValue: waitingCount.toString(),
-      deltaText: waitingCount > 5 ? "Elevated waiting queue" : "Normal queue flow",
+      id: "cancelled-today",
+      label: "Cancelled Appointments (Today)",
+      value: cancelledCount,
+      formattedValue: cancelledCount.toString(),
+      deltaText: cancelledCount > 0 ? `${cancelledPct}% of today's bookings` : "No cancellations today",
       isPositiveDeltaGood: false,
-      href: "/queue",
-      tone: waitingCount > 5 ? "amber" : "green",
+      href: "/appointments",
+      tone: cancelledCount > 0 ? "red" : "green",
     },
     {
       id: "doctors-available",

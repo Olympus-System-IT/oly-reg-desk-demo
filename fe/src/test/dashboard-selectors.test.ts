@@ -23,7 +23,7 @@ describe("Dashboard Selectors & Data Aggregation", () => {
     expect(adminKpis.length).toBe(5);
     expect(adminKpis.map((k) => k.id)).toEqual([
       "today-appts",
-      "waiting-patients",
+      "cancelled-today",
       "doctors-available",
       "net-collections",
       "outstanding-balance",
