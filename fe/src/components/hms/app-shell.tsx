@@ -3,7 +3,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Stethoscope, Tags, CalendarClock, FlaskConical, Users, Settings, BarChart3,
   UserPlus, CalendarPlus, ClipboardList, ListOrdered, CreditCard, Receipt, Wallet, LogOut, Building2, ChevronDown,
-  MessageSquare, TrendingUp, Activity, Pill, Boxes, Truck, History,
+  MessageSquare, Activity, Pill, Boxes, Truck, History,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
@@ -50,7 +50,6 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       group: "Overview",
       items: [
         { title: "Dashboard", to: "/dashboard", icon: LayoutDashboard, perm: "dashboard.view" },
-        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "financial.view" },
       ],
     },
     {
