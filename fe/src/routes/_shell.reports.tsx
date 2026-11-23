@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDB, useCurrentUser } from "@/lib/hms/store";
+import { NetCollectionBreakdown } from "@/features/net-collection/NetCollectionBreakdown";
 import { can } from "@/lib/hms/permissions";
 import {
   money,
@@ -504,6 +505,8 @@ function ReportsPage() {
                 </Button>
               </div>
             </div>
+
+            <NetCollectionBreakdown dateFrom={dateFrom} dateTo={dateTo} />
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <Stat label="Gross Revenue" value={money(pnlData.grossRevenue)} hint="Before discounts & reversals" />

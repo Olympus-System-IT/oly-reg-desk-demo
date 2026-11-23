@@ -3,7 +3,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Stethoscope, Tags, CalendarClock, FlaskConical, Users, Settings, BarChart3,
   UserPlus, CalendarPlus, ClipboardList, ListOrdered, CreditCard, Receipt, Wallet, LogOut, Building2, ChevronDown,
-  ShieldCheck, MessageSquare, TrendingUp, Pill, Boxes, Truck, History,
+  MessageSquare, Activity, Pill, Boxes, Truck, History,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
@@ -24,7 +24,7 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       group: "Overview",
       items: [
         { title: "Dashboard", to: "/dashboard", icon: LayoutDashboard, perm: "dashboard.view" },
-        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "financial.view" },
+        { title: "Doctor-wise Analytics", to: "/doctor-analytics", icon: Activity, perm: "analytics.view" },
       ],
     },
     {
@@ -40,7 +40,6 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       group: "Administration",
       items: [
         { title: "Users", to: "/users", icon: Users, perm: "users.manage" },
-        { title: "Approvals", to: "/approvals", icon: ShieldCheck, perm: "refund.approve" },
         { title: "Reports & P&L", to: "/reports", icon: BarChart3, perm: "reports.view" },
         { title: "Settings", to: "/settings", icon: Settings, perm: "setup.manage" },
       ],
@@ -51,7 +50,6 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
       group: "Overview",
       items: [
         { title: "Dashboard", to: "/dashboard", icon: LayoutDashboard, perm: "dashboard.view" },
-        { title: "Financial Dashboard", to: "/financial-dashboard", icon: TrendingUp, perm: "financial.view" },
       ],
     },
     {
@@ -108,7 +106,7 @@ export const NAV: Record<ModuleKey, { group: string; items: NavItem[] }[]> = {
 };
 
 const TITLES: Record<string, string> = {
-  dashboard: "Dashboard", "financial-dashboard": "Financial Dashboard", specialties: "Consultant Types", doctors: "Doctors", sessions: "Doctor sessions", services: "Services & Modalities",
+  dashboard: "Dashboard", "financial-dashboard": "Financial Dashboard", "doctor-analytics": "Doctor-wise Analytics", specialties: "Consultant Types", doctors: "Doctors", sessions: "Doctor sessions", services: "Services & Modalities",
   users: "Users", approvals: "Approvals", reports: "Reports", settings: "Settings", book: "New booking", patients: "Patients", appointments: "Appointments",
   queue: "Queue", pos: "POS", invoices: "Invoices", expenses: "Expenses", messages: "SMS Centre",
   pharmacy: "Dashboard", dispense: "Dispense / Counter POS", prescriptions: "Prescriptions", history: "Dispensed History", inventory: "Medications Master", batches: "Batch & Expiry Tracker", suppliers: "Suppliers & POs",

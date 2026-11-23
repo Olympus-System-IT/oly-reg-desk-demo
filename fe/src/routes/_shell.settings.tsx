@@ -53,7 +53,7 @@ function Settings() {
   const [filterTo, setFilterTo] = useState("");
   const [smsPreview, setSmsPreview] = useState({ name: "Kamal Perera", doctor: "Dr. Nimal Perera", date: "15 Oct 2026", time: "08:30", room: "OPD-1", ref: "BK-261015-0001" });
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, isDirty } } = useForm<SettingsForm>({
+  const { register, handleSubmit, formState: { isSubmitting, isDirty } } = useForm<SettingsForm>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
       hospitalName: db.settings.hospitalName,
@@ -105,12 +105,11 @@ function Settings() {
     <>
       <PageHeader
         title="Settings"
-        description="Hospital configuration, numbering, SMS templates, and audit log."
+        description="Numbering, receipts, SMS templates, and audit log."
       />
 
-      <Tabs defaultValue="general">
+      <Tabs defaultValue="numbering">
         <TabsList className="mb-5">
-          <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="numbering">Numbering</TabsTrigger>
           <TabsTrigger value="receipts">Receipts & Invoices</TabsTrigger>
           <TabsTrigger value="sms">SMS Templates</TabsTrigger>
@@ -118,50 +117,6 @@ function Settings() {
         </TabsList>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TabsContent value="general">
-            <div className="max-w-xl space-y-4 rounded-lg border bg-card p-5 shadow-xs">
-              <div className="flex items-center gap-4 rounded-md border bg-muted/20 p-3">
-                <div className="size-14 rounded-md border bg-white p-1 overflow-hidden shrink-0 flex items-center justify-center shadow-2xs">
-                  <img src="/logo.png" alt="Olympus Lanka Hospital Logo" className="size-full object-contain" />
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-foreground">Hospital Brand Logo</div>
-                  <div className="text-xs text-muted-foreground">Olympus Lanka Hospital logo applied to receipts, invoices, and app navigation.</div>
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Hospital name <span className="text-destructive">*</span></Label>
-                <Input {...register("hospitalName")} />
-                {errors.hospitalName && <p role="alert" className="text-xs text-destructive">{errors.hospitalName.message}</p>}
-              </div>
-              <div className="space-y-1.5">
-                <Label>Address <span className="text-destructive">*</span></Label>
-                <Textarea {...register("address")} rows={2} className="resize-none" />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>Phone <span className="text-destructive">*</span></Label>
-                  <Input {...register("phone")} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Email</Label>
-                  <Input type="email" {...register("email")} />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Currency</Label>
-                <NativeSelect {...register("currency")} className="w-32">
-                  <option value="LKR">LKR</option>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                </NativeSelect>
-              </div>
-              <div className="flex justify-end">
-                <Button type="submit" disabled={isSubmitting || !isDirty}><Save className="mr-2 size-4" />Save settings</Button>
-              </div>
-            </div>
-          </TabsContent>
-
           <TabsContent value="numbering">
             <div className="max-w-md space-y-4 rounded-lg border bg-card p-5 shadow-xs">
               <p className="text-sm text-muted-foreground">These prefixes are used for new documents. Existing numbers are not affected.</p>
